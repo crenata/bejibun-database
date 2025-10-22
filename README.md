@@ -9,7 +9,7 @@
 </div>
 
 # Database for Bejibun
-Database package with Built-in Bun for Bejibun Framework.
+Database for Bejibun Framework.
 
 ## Usage
 
@@ -55,38 +55,9 @@ You can pass the value with environment variables.
 How to use tha package.
 
 ```ts
-import type {DatabasePipeline} from "@bejibun/database/types";
-import BaseController from "@bejibun/core/bases/BaseController";
-import Logger from "@bejibun/logger";
 import Database from "@bejibun/database";
 
-export default class TestController extends BaseController {
-    public async database(request: Bun.BunRequest): Promise<Response> {
-        await Database.set("database", {hello: "world"});
-        const database = await Database.get("database");
-
-        await Database.connection("local").set("connection", "This is using custom connection.");
-        const connection = await Database.connection("local").get("connection");
-
-        const pipeline = await Database.pipeline((pipe: DatabasePipeline) => {
-            pipe.set("database-pipeline-1", "This is database pipeline 1");
-            pipe.set("database-pipeline-2", "This is database pipeline 2");
-
-            pipe.get("database-pipeline-1");
-            pipe.get("database-pipeline-2");
-        });
-
-        const subscriber = await Database.subscribe("database-subscribe", (message: string, channel: string) => {
-            Logger.setContext(channel).debug(message);
-        });
-        await Database.publish("database-subscribe", "Hai database subscriber!");
-        setTimeout(async () => {
-            await subscriber.unsubscribe();
-        }, 500);
-
-        return super.response.setData({database, connection, pipeline}).send();
-    }
-}
+Database.knex();
 ```
 
 ## Contributors
