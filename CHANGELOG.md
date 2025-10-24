@@ -3,6 +3,22 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v0.1.11](https://github.com/crenata/bejibun-database/compare/v0.1.1...v0.1.11) - 2025-10-25
+
+### 🩹 Fixes
+
+### 📖 Changes
+What's New :
+- Adding `make:migration` Create a new migration file
+
+### ❤️Contributors
+- Havea Crenata ([@crenata](https://github.com/crenata))
+- Ghulje ([@ghulje](https://github.com/ghulje))
+
+**Full Changelog**: https://github.com/crenata/bejibun-database/blob/master/CHANGELOG.md
+
+---
+
 ## [v0.1.1](https://github.com/crenata/bejibun-database/compare/v0.1.0...v0.1.1) - 2025-10-22
 
 ### 🩹 Fixes
