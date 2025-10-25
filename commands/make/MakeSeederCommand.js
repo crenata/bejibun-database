@@ -3,19 +3,19 @@ import Logger from "@bejibun/logger";
 import { defineValue, isEmpty } from "@bejibun/utils";
 import Luxon from "@bejibun/utils/facades/Luxon";
 import path from "path";
-export default class MakeMigrationCommand {
+export default class MakeSeederCommand {
     /**
      * The name and signature of the console command.
      *
      * @var $signature string
      */
-    $signature = "make:migration";
+    $signature = "make:seeder";
     /**
      * The console command description.
      *
      * @var $description string
      */
-    $description = "Create a new migration file";
+    $description = "Create a new seeder file";
     /**
      * The options or optional flag of the console command.
      *
@@ -28,7 +28,7 @@ export default class MakeMigrationCommand {
      * @var $arguments Array<Array<string>>
      */
     $arguments = [
-        ["<file>", "The name of the migration file"]
+        ["<file>", "The name of the seeder file"]
     ];
     async handle(options, args) {
         if (isEmpty(args)) {
@@ -36,20 +36,20 @@ export default class MakeMigrationCommand {
             return;
         }
         const file = args[0];
-        const migrationsDirectory = "migrations";
-        const migrationsPath = path.resolve(__dirname, `../../database/${migrationsDirectory}`);
-        const migrations = Array.from(new Bun.Glob("**/*").scanSync({
-            cwd: migrationsPath
+        const seedersDirectory = "seeders";
+        const seedersPath = path.resolve(__dirname, `../../database/${seedersDirectory}`);
+        const seeders = Array.from(new Bun.Glob("**/*").scanSync({
+            cwd: seedersPath
         })).filter(value => (/\.(m?js|ts)$/.test(value) &&
             !value.endsWith(".d.ts")));
-        const template = migrations.find(value => value.includes("migration_template"));
+        const template = seeders.find(value => value.includes("seeder_template"));
         if (isEmpty(template)) {
-            Logger.setContext("APP").error("Whoops, something went wrong, the migration template not found.");
+            Logger.setContext("APP").error("Whoops, something went wrong, the seeder template not found.");
             return;
         }
         const now = Luxon.datetime.now().toFormat("yyyyMMdd");
         const latest = Array.from(new Bun.Glob("**/*").scanSync({
-            cwd: App.Path.databasePath(migrationsDirectory)
+            cwd: App.Path.databasePath(seedersDirectory)
         })).map((value) => {
             const split = value.split("_").slice(0, 2);
             return {
@@ -60,8 +60,8 @@ export default class MakeMigrationCommand {
             return value.date === now;
         }).map((value) => value.count).sort().reverse()[0];
         const counter = defineValue(parseInt(latest), 0);
-        const destination = `${migrationsDirectory}/${now}_${String(counter + 1).padStart(6, "0")}_${file}.ts`;
-        await Bun.write(App.Path.databasePath(destination), await Bun.file(path.resolve(migrationsPath, template)).text());
-        Logger.setContext("APP").info(`Migration [database/${destination}] created successfully.`);
+        const destination = `${seedersDirectory}/${now}_${String(counter + 1).padStart(6, "0")}_${file}.ts`;
+        await Bun.write(App.Path.databasePath(destination), await Bun.file(path.resolve(seedersPath, template)).text());
+        Logger.setContext("APP").info(`Seeder [database/${destination}] created successfully.`);
     }
 }
