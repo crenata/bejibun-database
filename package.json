@@ -1,6 +1,6 @@
 {
     "name": "@bejibun/database",
-    "version": "0.1.12",
+    "version": "0.1.13",
     "author": "Havea Crenata <havea.crenata@gmail.com>",
     "repository": {
         "type": "git",
@@ -37,7 +37,7 @@
     "dependencies": {
         "@bejibun/app": "^0.1.19",
         "@bejibun/logger": "^0.1.19",
-        "@bejibun/utils": "^0.1.16",
+        "@bejibun/utils": "^0.1.17",
         "knex": "^3.1.0",
         "ora": "^9.0.0",
         "pg": "^8.16.3"
