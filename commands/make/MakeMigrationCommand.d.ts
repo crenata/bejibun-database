@@ -23,5 +23,5 @@ export default class MakeMigrationCommand {
      * @var $arguments Array<Array<string>>
      */
     protected $arguments: Array<Array<string>>;
-    handle(options: any, args: Array<string>): Promise<void>;
+    handle(options: any, args: string): Promise<void>;
 }

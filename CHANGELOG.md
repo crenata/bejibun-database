@@ -3,6 +3,22 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v0.1.14](https://github.com/crenata/bejibun-database/compare/v0.1.12...v0.1.14) - 2025-10-25
+
+### 🩹 Fixes
+- Fix `make:migration` migration filename
+- Fix `make:seeder` seeder filename
+
+### 📖 Changes
+
+### ❤️Contributors
+- Havea Crenata ([@crenata](https://github.com/crenata))
+- Ghulje ([@ghulje](https://github.com/ghulje))
+
+**Full Changelog**: https://github.com/crenata/bejibun-database/blob/master/CHANGELOG.md
+
+---
+
 ## [v0.1.12](https://github.com/crenata/bejibun-database/compare/v0.1.11...v0.1.12) - 2025-10-25
 
 ### 🩹 Fixes

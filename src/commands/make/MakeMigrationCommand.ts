@@ -35,13 +35,13 @@ export default class MakeMigrationCommand {
         ["<file>", "The name of the migration file"]
     ];
 
-    public async handle(options: any, args: Array<string>): Promise<void> {
+    public async handle(options: any, args: string): Promise<void> {
         if (isEmpty(args)) {
             Logger.setContext("APP").error("There is no filename provided.");
             return;
         }
 
-        const file: string = args[0];
+        const file: string = args;
         const migrationsDirectory: string = "migrations";
         const migrationsPath: string = path.resolve(__dirname, `../../database/${migrationsDirectory}`);
 

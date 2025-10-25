@@ -35,7 +35,7 @@ export default class MakeSeederCommand {
             Logger.setContext("APP").error("There is no filename provided.");
             return;
         }
-        const file = args[0];
+        const file = args;
         const seedersDirectory = "seeders";
         const seedersPath = path.resolve(__dirname, `../../database/${seedersDirectory}`);
         const seeders = Array.from(new Bun.Glob("**/*").scanSync({

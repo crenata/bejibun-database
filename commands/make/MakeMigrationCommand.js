@@ -35,7 +35,7 @@ export default class MakeMigrationCommand {
             Logger.setContext("APP").error("There is no filename provided.");
             return;
         }
-        const file = args[0];
+        const file = args;
         const migrationsDirectory = "migrations";
         const migrationsPath = path.resolve(__dirname, `../../database/${migrationsDirectory}`);
         const migrations = Array.from(new Bun.Glob("**/*").scanSync({
