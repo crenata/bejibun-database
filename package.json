@@ -1,6 +1,6 @@
 {
     "name": "@bejibun/database",
-    "version": "0.1.14",
+    "version": "0.1.15",
     "author": "Havea Crenata <havea.crenata@gmail.com>",
     "repository": {
         "type": "git",
@@ -27,9 +27,11 @@
     "license": "MIT",
     "scripts": {
         "alias": "bunx tsc-alias -p tsconfig.json",
+        "clean-stubs": "rm -rf stubs",
+        "stubs": "cp -rf src/stubs dist",
         "rsync": "rsync -a dist/ ./",
         "clean": "rm -rf dist",
-        "build": "bunx tsc -p tsconfig.json && bun run alias && bun run rsync && bun run clean",
+        "build": "bun run clean-stubs && bunx tsc -p tsconfig.json && bun run alias && bun run stubs && bun run rsync && bun run clean",
         "deploy": "bun run build && bun publish --access public"
     },
     "type": "module",

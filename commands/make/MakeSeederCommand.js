@@ -37,10 +37,10 @@ export default class MakeSeederCommand {
         }
         const file = args;
         const seedersDirectory = "seeders";
-        const seedersPath = path.resolve(__dirname, `../../database/${seedersDirectory}`);
+        const seedersPath = path.resolve(__dirname, `../../stubs/database/${seedersDirectory}`);
         const seeders = Array.from(new Bun.Glob("**/*").scanSync({
             cwd: seedersPath
-        })).filter(value => (/\.(m?js|ts)$/.test(value) &&
+        })).filter(value => (/\.ts$/.test(value) &&
             !value.endsWith(".d.ts")));
         const template = seeders.find(value => value.includes("seeder_template"));
         if (isEmpty(template)) {

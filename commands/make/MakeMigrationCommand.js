@@ -37,10 +37,10 @@ export default class MakeMigrationCommand {
         }
         const file = args;
         const migrationsDirectory = "migrations";
-        const migrationsPath = path.resolve(__dirname, `../../database/${migrationsDirectory}`);
+        const migrationsPath = path.resolve(__dirname, `../../stubs/database/${migrationsDirectory}`);
         const migrations = Array.from(new Bun.Glob("**/*").scanSync({
             cwd: migrationsPath
-        })).filter(value => (/\.(m?js|ts)$/.test(value) &&
+        })).filter(value => (/\.ts$/.test(value) &&
             !value.endsWith(".d.ts")));
         const template = migrations.find(value => value.includes("migration_template"));
         if (isEmpty(template)) {
