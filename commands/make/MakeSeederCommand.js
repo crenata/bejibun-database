@@ -37,13 +37,8 @@ export default class MakeSeederCommand {
         }
         const file = args;
         const seedersDirectory = "seeders";
-        const seedersPath = path.resolve(__dirname, `../../stubs/database/${seedersDirectory}`);
-        const seeders = Array.from(new Bun.Glob("**/*").scanSync({
-            cwd: seedersPath
-        })).filter(value => (/\.ts$/.test(value) &&
-            !value.endsWith(".d.ts")));
-        const template = seeders.find(value => value.includes("seeder_template"));
-        if (isEmpty(template)) {
+        const template = Bun.file(path.resolve(__dirname, `../../stubs/database/${seedersDirectory}/seeder_template.ts`));
+        if (!await template.exists()) {
             Logger.setContext("APP").error("Whoops, something went wrong, the seeder template not found.");
             return;
         }
@@ -61,7 +56,7 @@ export default class MakeSeederCommand {
         }).map((value) => value.count).sort().reverse()[0];
         const counter = defineValue(parseInt(latest), 0);
         const destination = `${seedersDirectory}/${now}_${String(counter + 1).padStart(6, "0")}_${file}.ts`;
-        await Bun.write(App.Path.databasePath(destination), await Bun.file(path.resolve(seedersPath, template)).text());
+        await Bun.write(App.Path.databasePath(destination), await template.text());
         Logger.setContext("APP").info(`Seeder [database/${destination}] created successfully.`);
     }
 }

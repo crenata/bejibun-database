@@ -37,13 +37,8 @@ export default class MakeMigrationCommand {
         }
         const file = args;
         const migrationsDirectory = "migrations";
-        const migrationsPath = path.resolve(__dirname, `../../stubs/database/${migrationsDirectory}`);
-        const migrations = Array.from(new Bun.Glob("**/*").scanSync({
-            cwd: migrationsPath
-        })).filter(value => (/\.ts$/.test(value) &&
-            !value.endsWith(".d.ts")));
-        const template = migrations.find(value => value.includes("migration_template"));
-        if (isEmpty(template)) {
+        const template = Bun.file(path.resolve(__dirname, `../../stubs/database/${migrationsDirectory}/migration_template.ts`));
+        if (!await template.exists()) {
             Logger.setContext("APP").error("Whoops, something went wrong, the migration template not found.");
             return;
         }
@@ -61,7 +56,7 @@ export default class MakeMigrationCommand {
         }).map((value) => value.count).sort().reverse()[0];
         const counter = defineValue(parseInt(latest), 0);
         const destination = `${migrationsDirectory}/${now}_${String(counter + 1).padStart(6, "0")}_${file}.ts`;
-        await Bun.write(App.Path.databasePath(destination), await Bun.file(path.resolve(migrationsPath, template)).text());
+        await Bun.write(App.Path.databasePath(destination), await template.text());
         Logger.setContext("APP").info(`Migration [database/${destination}] created successfully.`);
     }
 }
