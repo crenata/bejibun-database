@@ -50,7 +50,7 @@ export default class MakeMigrationCommand {
             return;
         }
 
-        const now: string = Luxon.datetime.now().toFormat("yyyyMMdd");
+        const now: string = Luxon.DateTime.now().toFormat("yyyyMMdd");
         const latest: string | undefined = Array.from(
             new Bun.Glob("**/*").scanSync({
                 cwd: App.Path.databasePath(migrationsDirectory)

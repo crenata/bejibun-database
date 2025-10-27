@@ -42,7 +42,7 @@ export default class MakeSeederCommand {
             Logger.setContext("APP").error("Whoops, something went wrong, the seeder template not found.");
             return;
         }
-        const now = Luxon.datetime.now().toFormat("yyyyMMdd");
+        const now = Luxon.DateTime.now().toFormat("yyyyMMdd");
         const latest = Array.from(new Bun.Glob("**/*").scanSync({
             cwd: App.Path.databasePath(seedersDirectory)
         })).map((value) => {

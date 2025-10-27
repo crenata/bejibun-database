@@ -42,7 +42,7 @@ export default class MakeMigrationCommand {
             Logger.setContext("APP").error("Whoops, something went wrong, the migration template not found.");
             return;
         }
-        const now = Luxon.datetime.now().toFormat("yyyyMMdd");
+        const now = Luxon.DateTime.now().toFormat("yyyyMMdd");
         const latest = Array.from(new Bun.Glob("**/*").scanSync({
             cwd: App.Path.databasePath(migrationsDirectory)
         })).map((value) => {
