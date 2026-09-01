@@ -1,3 +1,4 @@
+/** Console command that runs database seeders. */
 export default class DbSeedCommand {
     /**
      * The name and signature of the console command.
@@ -23,5 +24,10 @@ export default class DbSeedCommand {
      * @var $arguments Array<Array<string>>
      */
     protected $arguments: Array<Array<string>>;
+    /**
+     * Executes the database seed command.
+     *
+     * @param {any} options - Command options.
+     */
     handle(options: any): Promise<void>;
 }

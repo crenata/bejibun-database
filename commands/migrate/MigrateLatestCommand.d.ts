@@ -1,3 +1,4 @@
+/** Console command that runs the latest migration. */
 export default class MigrateLatestCommand {
     /**
      * The name and signature of the console command.
@@ -23,5 +24,6 @@ export default class MigrateLatestCommand {
      * @var $arguments Array<Array<string>>
      */
     protected $arguments: Array<Array<string>>;
+    /** Executes the latest migration. */
     handle(): Promise<void>;
 }

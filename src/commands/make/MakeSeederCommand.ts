@@ -1,9 +1,10 @@
 import App from "@bejibun/app";
 import Logger from "@bejibun/logger";
-import {defineValue, isEmpty} from "@bejibun/utils";
+import {isEmpty} from "@bejibun/utils";
 import Luxon from "@bejibun/utils/facades/Luxon";
-import path from "path";
+import {latestCounter, nextFileName, resolveTemplate} from "@/commands/make/MakeHelper";
 
+/** Console command that creates a new seeder file. */
 export default class MakeSeederCommand {
     /**
      * The name and signature of the console command.
@@ -33,6 +34,12 @@ export default class MakeSeederCommand {
      */
     protected $arguments: Array<Array<string>> = [["<file>", "The name of the seeder file"]];
 
+    /**
+     * Handles the seeder creation command.
+     *
+     * @param {any} options - Command options.
+     * @param {string} args - The seeder filename.
+     */
     public async handle(options: any, args: string): Promise<void> {
         if (isEmpty(args)) {
             Logger.setContext("APP").error("There is no filename provided.");
@@ -40,10 +47,8 @@ export default class MakeSeederCommand {
         }
 
         const file: string = args;
-        const seedersDirectory: string = "seeders";
-        const template: Bun.BunFile = Bun.file(
-            path.resolve(__dirname, `../../stubs/database/${seedersDirectory}/seeder_template.ts`)
-        );
+        const seedersDirectory = "seeders";
+        const template: Bun.BunFile = resolveTemplate(__dirname, seedersDirectory);
 
         if (!(await template.exists())) {
             Logger.setContext("APP").error(
@@ -53,29 +58,12 @@ export default class MakeSeederCommand {
         }
 
         const now: string = Luxon.DateTime.now().toFormat("yyyyMMdd");
-        const latest: string | undefined = Array.from(
-            new Bun.Glob("**/*").scanSync({
-                cwd: App.Path.databasePath(seedersDirectory)
-            })
-        )
-            .map((value: string) => {
-                const split = value.split("_").slice(0, 2);
-
-                return {
-                    date: split[0],
-                    count: split[1]
-                };
-            })
-            .filter((value: Record<string, string>) => {
-                return value.date === now;
-            })
-            .map((value: Record<string, string>) => value.count)
-            .sort()
-            .reverse()[0];
-
-        const counter: number = defineValue(parseInt(latest), 0);
-
-        const destination: string = `${seedersDirectory}/${now}_${String(counter + 1).padStart(6, "0")}_${file}.ts`;
+        const destination: string = nextFileName(
+            seedersDirectory,
+            now,
+            latestCounter(now, seedersDirectory),
+            file
+        );
 
         await Bun.write(App.Path.databasePath(destination), await template.text());
 

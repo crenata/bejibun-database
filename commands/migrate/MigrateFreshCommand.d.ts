@@ -1,3 +1,4 @@
+/** Console command that drops all tables and re-runs migrations. */
 export default class MigrateFreshCommand {
     /**
      * The name and signature of the console command.
@@ -23,5 +24,10 @@ export default class MigrateFreshCommand {
      * @var $arguments Array<Array<string>>
      */
     protected $arguments: Array<Array<string>>;
+    /**
+     * Executes the migrate fresh command.
+     *
+     * @param {any} options - Command options.
+     */
     handle(options: any): Promise<void>;
 }

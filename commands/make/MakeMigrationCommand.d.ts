@@ -1,3 +1,4 @@
+/** Console command that creates a new migration file. */
 export default class MakeMigrationCommand {
     /**
      * The name and signature of the console command.
@@ -23,5 +24,11 @@ export default class MakeMigrationCommand {
      * @var $arguments Array<Array<string>>
      */
     protected $arguments: Array<Array<string>>;
+    /**
+     * Handles the migration creation command.
+     *
+     * @param {any} options - Command options.
+     * @param {string} args - The migration filename.
+     */
     handle(options: any, args: string): Promise<void>;
 }

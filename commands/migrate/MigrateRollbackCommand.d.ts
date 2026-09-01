@@ -1,3 +1,4 @@
+/** Console command that rolls back the latest migrations. */
 export default class MigrateRollbackCommand {
     /**
      * The name and signature of the console command.
@@ -23,5 +24,10 @@ export default class MigrateRollbackCommand {
      * @var $arguments Array<Array<string>>
      */
     protected $arguments: Array<Array<string>>;
+    /**
+     * Executes the rollback command.
+     *
+     * @param {any} options - Command options.
+     */
     handle(options: any): Promise<void>;
 }

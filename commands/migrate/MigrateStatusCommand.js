@@ -1,7 +1,8 @@
 import Logger from "@bejibun/logger";
-import Chalk from "@bejibun/logger/facades/Chalk";
+import chalk from "chalk";
 import ora from "ora";
 import Database from "../../facades/Database";
+/** Console command that lists migration status. */
 export default class MigrateStatusCommand {
     /**
      * The name and signature of the console command.
@@ -27,9 +28,10 @@ export default class MigrateStatusCommand {
      * @var $arguments Array<Array<string>>
      */
     $arguments = [];
+    /** Executes the migration status command. */
     async handle() {
         const database = Database.knex();
-        const spinner = ora(Chalk.setValue("Fetching...").info().show()).start();
+        const spinner = ora(chalk.blueBright("Fetching...")).start();
         try {
             const [completed, pending] = await database.migrate.list();
             spinner.succeed("Completed Migrations :");
@@ -48,7 +50,7 @@ export default class MigrateStatusCommand {
             spinner.fail(`Fetching failed : ${error.message}`);
         }
         finally {
-            await database.destroy();
+            await Database.reset();
             spinner.stop();
         }
     }

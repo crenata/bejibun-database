@@ -1,6 +1,7 @@
-import Chalk from "@bejibun/logger/facades/Chalk";
+import chalk from "chalk";
 import ora from "ora";
 import Database from "../../facades/Database";
+/** Console command that runs the latest migration. */
 export default class MigrateLatestCommand {
     /**
      * The name and signature of the console command.
@@ -26,9 +27,10 @@ export default class MigrateLatestCommand {
      * @var $arguments Array<Array<string>>
      */
     $arguments = [];
+    /** Executes the latest migration. */
     async handle() {
         const database = Database.knex();
-        const spinner = ora(Chalk.setValue("Migrating...").info().show()).start();
+        const spinner = ora(chalk.blueBright("Migrating...")).start();
         try {
             const [batchNo, logs] = await database.migrate.latest();
             spinner.succeed(`Batch ${batchNo} finished`);
@@ -41,7 +43,7 @@ export default class MigrateLatestCommand {
             spinner.fail(`Migration failed : ${error.message}`);
         }
         finally {
-            await database.destroy();
+            await Database.reset();
             spinner.stop();
         }
     }

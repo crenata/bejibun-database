@@ -1,9 +1,10 @@
 import Logger from "@bejibun/logger";
-import Chalk from "@bejibun/logger/facades/Chalk";
 import {ask, isNotEmpty} from "@bejibun/utils";
+import chalk from "chalk";
 import ora from "ora";
 import Database from "@/facades/Database";
 
+/** Console command that rolls back the latest migrations. */
 export default class MigrateRollbackCommand {
     /**
      * The name and signature of the console command.
@@ -33,6 +34,11 @@ export default class MigrateRollbackCommand {
      */
     protected $arguments: Array<Array<string>> = [];
 
+    /**
+     * Executes the rollback command.
+     *
+     * @param {any} options - Command options.
+     */
     public async handle(options: any): Promise<void> {
         const database = Database.knex();
 
@@ -41,18 +47,13 @@ export default class MigrateRollbackCommand {
         let confirm = "Y";
         if (!bypass)
             confirm = await ask(
-                Chalk.setValue(
-                    "This will ROLLBACK latest migrations. Are you want to continue? (Y/N): "
-                )
-                    .inline()
-                    .error()
-                    .show()
+                chalk.red("This will ROLLBACK latest migrations. Are you want to continue? (Y/N): ")
             );
 
         if (confirm.toUpperCase() === "Y") {
             if (!bypass) Logger.empty();
 
-            const spinner = ora(Chalk.setValue("Rollback...").info().show()).start();
+            const spinner = ora(chalk.blueBright("Rollback...")).start();
             try {
                 const [batchNo, logs] = await database.migrate.rollback();
                 spinner.succeed(`Batch ${batchNo} finished`);
@@ -63,7 +64,7 @@ export default class MigrateRollbackCommand {
             } catch (error: any) {
                 spinner.fail(`Rollback failed : ${error.message}`);
             } finally {
-                await database.destroy();
+                await Database.reset();
                 spinner.stop();
             }
         }

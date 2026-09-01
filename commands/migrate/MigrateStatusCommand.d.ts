@@ -1,3 +1,4 @@
+/** Console command that lists migration status. */
 export default class MigrateStatusCommand {
     /**
      * The name and signature of the console command.
@@ -23,5 +24,6 @@ export default class MigrateStatusCommand {
      * @var $arguments Array<Array<string>>
      */
     protected $arguments: Array<Array<string>>;
+    /** Executes the migration status command. */
     handle(): Promise<void>;
 }

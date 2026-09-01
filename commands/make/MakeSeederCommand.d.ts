@@ -1,3 +1,4 @@
+/** Console command that creates a new seeder file. */
 export default class MakeSeederCommand {
     /**
      * The name and signature of the console command.
@@ -23,5 +24,11 @@ export default class MakeSeederCommand {
      * @var $arguments Array<Array<string>>
      */
     protected $arguments: Array<Array<string>>;
+    /**
+     * Handles the seeder creation command.
+     *
+     * @param {any} options - Command options.
+     * @param {string} args - The seeder filename.
+     */
     handle(options: any, args: string): Promise<void>;
 }

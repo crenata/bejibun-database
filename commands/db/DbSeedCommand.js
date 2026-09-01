@@ -1,8 +1,9 @@
-import Chalk from "@bejibun/logger/facades/Chalk";
 import { ask, defineValue, isNotEmpty } from "@bejibun/utils";
+import chalk from "chalk";
 import ora from "ora";
 import path from "path";
 import Database from "../../facades/Database";
+/** Console command that runs database seeders. */
 export default class DbSeedCommand {
     /**
      * The name and signature of the console command.
@@ -31,6 +32,11 @@ export default class DbSeedCommand {
      * @var $arguments Array<Array<string>>
      */
     $arguments = [];
+    /**
+     * Executes the database seed command.
+     *
+     * @param {any} options - Command options.
+     */
     async handle(options) {
         const database = Database.knex();
         const environment = defineValue(Bun.env.APP_ENV, "development");
@@ -38,12 +44,9 @@ export default class DbSeedCommand {
         const seeder = options.seeder;
         let confirm = "Y";
         if (environment === "production" && !bypass)
-            confirm = await ask(Chalk.setValue("Application in production. Are you sure you want to run this command? (Y/N): ")
-                .inline()
-                .error()
-                .show());
+            confirm = await ask(chalk.red("Application in production. Are you sure you want to run this command? (Y/N): "));
         if (confirm.toUpperCase() === "Y") {
-            const spinner = ora(Chalk.setValue("Seeding...").info().show()).start();
+            const spinner = ora(chalk.blueBright("Seeding...")).start();
             try {
                 const logs = (await database.seed.run({
                     specific: seeder
@@ -58,7 +61,7 @@ export default class DbSeedCommand {
                 spinner.fail(`Seeding failed : ${error.message}`);
             }
             finally {
-                await database.destroy();
+                await Database.reset();
                 spinner.stop();
             }
         }

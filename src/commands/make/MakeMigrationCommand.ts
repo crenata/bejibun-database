@@ -1,9 +1,10 @@
 import App from "@bejibun/app";
 import Logger from "@bejibun/logger";
-import {defineValue, isEmpty} from "@bejibun/utils";
+import {isEmpty} from "@bejibun/utils";
 import Luxon from "@bejibun/utils/facades/Luxon";
-import path from "path";
+import {latestCounter, nextFileName, resolveTemplate} from "@/commands/make/MakeHelper";
 
+/** Console command that creates a new migration file. */
 export default class MakeMigrationCommand {
     /**
      * The name and signature of the console command.
@@ -33,6 +34,12 @@ export default class MakeMigrationCommand {
      */
     protected $arguments: Array<Array<string>> = [["<file>", "The name of the migration file"]];
 
+    /**
+     * Handles the migration creation command.
+     *
+     * @param {any} options - Command options.
+     * @param {string} args - The migration filename.
+     */
     public async handle(options: any, args: string): Promise<void> {
         if (isEmpty(args)) {
             Logger.setContext("APP").error("There is no filename provided.");
@@ -40,13 +47,8 @@ export default class MakeMigrationCommand {
         }
 
         const file: string = args;
-        const migrationsDirectory: string = "migrations";
-        const template: Bun.BunFile = Bun.file(
-            path.resolve(
-                __dirname,
-                `../../stubs/database/${migrationsDirectory}/migration_template.ts`
-            )
-        );
+        const migrationsDirectory = "migrations";
+        const template: Bun.BunFile = resolveTemplate(__dirname, migrationsDirectory);
 
         if (!(await template.exists())) {
             Logger.setContext("APP").error(
@@ -56,29 +58,12 @@ export default class MakeMigrationCommand {
         }
 
         const now: string = Luxon.DateTime.now().toFormat("yyyyMMdd");
-        const latest: string | undefined = Array.from(
-            new Bun.Glob("**/*").scanSync({
-                cwd: App.Path.databasePath(migrationsDirectory)
-            })
-        )
-            .map((value: string) => {
-                const split = value.split("_").slice(0, 2);
-
-                return {
-                    date: split[0],
-                    count: split[1]
-                };
-            })
-            .filter((value: Record<string, string>) => {
-                return value.date === now;
-            })
-            .map((value: Record<string, string>) => value.count)
-            .sort()
-            .reverse()[0];
-
-        const counter: number = defineValue(parseInt(latest), 0);
-
-        const destination: string = `${migrationsDirectory}/${now}_${String(counter + 1).padStart(6, "0")}_${file}.ts`;
+        const destination: string = nextFileName(
+            migrationsDirectory,
+            now,
+            latestCounter(now, migrationsDirectory),
+            file
+        );
 
         await Bun.write(App.Path.databasePath(destination), await template.text());
 

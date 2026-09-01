@@ -1,8 +1,9 @@
 import Logger from "@bejibun/logger";
-import Chalk from "@bejibun/logger/facades/Chalk";
 import { ask, isNotEmpty } from "@bejibun/utils";
+import chalk from "chalk";
 import ora from "ora";
 import Database from "../../facades/Database";
+/** Console command that drops all tables and re-runs migrations. */
 export default class MigrateFreshCommand {
     /**
      * The name and signature of the console command.
@@ -28,19 +29,21 @@ export default class MigrateFreshCommand {
      * @var $arguments Array<Array<string>>
      */
     $arguments = [];
+    /**
+     * Executes the migrate fresh command.
+     *
+     * @param {any} options - Command options.
+     */
     async handle(options) {
         const database = Database.knex();
         const bypass = isNotEmpty(options.force);
         let confirm = "Y";
         if (!bypass)
-            confirm = await ask(Chalk.setValue("This will DROP ALL tables and re-run ALL migrations. Are you want to continue? (Y/N): ")
-                .inline()
-                .error()
-                .show());
+            confirm = await ask(chalk.red("This will DROP ALL tables and re-run ALL migrations. Are you want to continue? (Y/N): "));
         if (confirm.toUpperCase() === "Y") {
             if (!bypass)
                 Logger.empty();
-            const spinner = ora(Chalk.setValue("Rollback...").info().show()).start();
+            const spinner = ora(chalk.blueBright("Rollback...")).start();
             try {
                 await database.migrate.rollback({}, true);
                 spinner.succeed("Rolled back all migrations");
@@ -55,7 +58,7 @@ export default class MigrateFreshCommand {
                 spinner.fail(`Migration failed : ${error.message}`);
             }
             finally {
-                await database.destroy();
+                await Database.reset();
                 spinner.stop();
             }
         }

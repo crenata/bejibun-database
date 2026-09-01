@@ -1,8 +1,13 @@
 import App from "@bejibun/app";
 import Logger from "@bejibun/logger";
 import path from "path";
+/**
+ * Copies the package's default config files into the project's config directory.
+ */
 const configPath = path.resolve(__dirname, "config");
+/** Matches JavaScript and TypeScript file extensions. */
 const regex = /\.(m?js|ts)$/;
+/** Config files found in the package's config directory. */
 const configs = Array.from(new Bun.Glob("**/*").scanSync({
     cwd: configPath
 })).filter((value) => regex.test(value) && !value.endsWith(".d.ts"));
