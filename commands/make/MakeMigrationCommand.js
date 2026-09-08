@@ -2,7 +2,7 @@ import App from "@bejibun/app";
 import Logger from "@bejibun/logger";
 import { isEmpty } from "@bejibun/utils";
 import Luxon from "@bejibun/utils/facades/Luxon";
-import { latestCounter, nextFileName, resolveTemplate } from "../../commands/make/MakeHelper";
+import { latestCounter, nextFileName, resolveTemplate } from "./MakeHelper";
 /** Console command that creates a new migration file. */
 export default class MakeMigrationCommand {
     /**
